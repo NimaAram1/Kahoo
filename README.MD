@@ -4,4 +4,7 @@ so if you like to learn useful skills, come in!
 ## Dev status
 not completed
 ## Todo
-[ ] waiting for the project to develop more completely
+- [ ] waiting for the project to develop more completely
+## More
+- database design
+    - [click to see](https://drawsql.app/nima-aram/diagrams/kahoo)
