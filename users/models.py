@@ -12,7 +12,7 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=190, verbose_name="نام کاربری", unique=True, help_text="در اینجا نام کاربری خود را وارد نمایید")
     email = models.EmailField(max_length=200, verbose_name="ایمیل", unique=True, help_text="ایمیل خود را وارد نمایید")
     birth_date = models.DateField(verbose_name="تاریخ تولد", null=True, blank=True, help_text="تاریخ تولد خود را وارد نمایید")
-    age = models.PositiveIntegerField(verbose_name="سن", max_digits=3, null=True, blank=True, help_text="سن خود را وارد نمایید")
+    age = models.IntegerField(verbose_name="سن", null=True, blank=True, help_text="سن خود را وارد نمایید")
     bio = models.TextField(verbose_name="درباره", null=True, blank=True, help_text="درباره خود میتوانید چند خط بنویسید")
 #   courses_bought =
     user_type = models.CharField(max_length=2, choices=USER_TYPE_CHOICES, verbose_name="نوع حساب")
@@ -21,13 +21,16 @@ class User(AbstractBaseUser):
     profile_image = models.ImageField(upload_to="profile_image/%Y/%m/%d", verbose_name="عکس پروفایل", blank=True, default="profile_image/default.png", help_text="عکس پروفایل خود را وارد نمایید")
     is_premium = models.BooleanField(default=False, verbose_name="آیا کاربر ویژه هستید؟")
     premium_until = models.DateTimeField(default=timezone.now, verbose_name="تا چه زمانی کاربر ویژه هستید")
+    user_level = models.IntegerField(verbose_name="سطح حساب شما", blank=True, default=0)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
-    def __str__(self) -> str:
-        return f"{username} account"
+    def __str__(self):
+        return f"{self.username} account"
 
-    def is_premium_user(self) -> bool:
+    def is_premium_user(self):
         if self.premium_until > timezone.now():
             self.is_premium = True
             return True
@@ -43,7 +46,7 @@ class User(AbstractBaseUser):
         return True
 
     @property
-    def is_staff(self) -> bool :
+    def is_staff(self) -> bool:
         return self.is_admin
 
     class Meta:
