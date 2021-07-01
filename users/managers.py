@@ -19,3 +19,9 @@ class UserManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user    
+
+    def return_user_instance(self, email, username, password):
+
+        user = self.model(email=email, username=username) 
+        user.set_password(password)
+        return user   

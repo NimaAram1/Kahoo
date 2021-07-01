@@ -65,7 +65,7 @@ class User(AbstractBaseUser):
             models.Index(name="users_username_index", fields=['username'])
         ]
         constraints = [
-            models.UniqueConstraint(name="check_username_and_email", fields=['username','email'])
+            models.UniqueConstraint(fields=['username', 'email'], name="check_username_and_email" )
         ]
 
 @receiver(post_save, sender=User)
