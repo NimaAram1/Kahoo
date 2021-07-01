@@ -1,10 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator as minv, MaxValueValidator as maxv
 from django.utils import timezone
-from django.contrib.auth import get_user_model
 
-# user model
-User = get_user_model()
+
 
 class Course(models.Model):
 
@@ -21,10 +19,10 @@ class Course(models.Model):
     cover = models.ImageField(upload_to="course_cover/%Y/%m/%d", verbose_name="کاور پروژه", help_text="در اینجا کاور دوره رو آپلود کنید")
     cover_video = models.FileField(upload_to=f"course_video/{title}", verbose_name="ویدیو معرفی", help_text="در اینجا ویدیو معرفی دوره خود را ببینید")
 #   parts =
-    score = models.FloatField(decimal_places=1, verbose_name="امتیاز دوره", blank=True, default=0.0, validators=[minv(0.0), maxv(10.0)])   
-    total_score_voted = models.FloatField(blank=True, default=0.0, decimal_places=1)
-    users_voted = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
-    permission = models.MultipleChoiceField(choices=COURSE_PERMISSIONS, verbose_name="سطح دسترسی دوره", help_text="در اینجا سطح دسترسی دوره را تعریف کنید")
+    score = models.DecimalField(max_digits=2, decimal_places=1, verbose_name="امتیاز دوره", blank=True, default=0.0, validators=[minv(0.0), maxv(10.0)])   
+    total_score_voted = models.DecimalField(max_digits=300, blank=True, default=0.0, decimal_places=1)
+    users_voted = models.ForeignKey("users.User", blank=True, null=True, on_delete=models.CASCADE, related_name="ucourse") 
+    permission = models.CharField(max_length=8 ,choices=COURSE_PERMISSIONS, verbose_name="سطح دسترسی دوره", help_text="در اینجا سطح دسترسی دوره را تعریف کنید")
     publish_date = models.DateField(default=timezone.now, blank=True, verbose_name="تاریخ انتشار")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -40,8 +38,7 @@ class Course(models.Model):
             return "شما از قبل امتیاز داده اید!"    
         self.score = self.total_score_voted / len(self.users_voted)
 
-
     class Meta:
         verbose_name = "دوره"
         verbose_name_plural = "دوره ها" 
-        ordering = ["publish_date", "score"]
+        ordering = ["publish_date", "score"]    
